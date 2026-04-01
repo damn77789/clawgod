@@ -10,12 +10,12 @@
 
 **macOS / Linux:**
 ```bash
-curl -fsSL clawgod.0chen.cc/install.sh | bash
+curl -fsSL https://github.com/0Chencc/clawgod/releases/latest/download/install.sh | bash
 ```
 
 **Windows (PowerShell):**
 ```powershell
-irm clawgod.0chen.cc/install.ps1 | iex
+irm https://github.com/0Chencc/clawgod/releases/latest/download/install.ps1 | iex
 ```
 
 緑のロゴ = パッチ適用済み。オレンジのロゴ = オリジナル。
@@ -62,16 +62,26 @@ claude.orig         # オリジナル未修正版
 
 インストールコマンドを再実行すると最新版を取得しパッチを再適用：
 
+**macOS / Linux:**
 ```bash
-curl -fsSL clawgod.0chen.cc/install.sh | bash
+curl -fsSL https://github.com/0Chencc/clawgod/releases/latest/download/install.sh | bash
+```
+
+**Windows:**
+```powershell
+irm https://github.com/0Chencc/clawgod/releases/latest/download/install.ps1 | iex
 ```
 
 ## アンインストール
 
-オリジナルの `claude` コマンドを復元：
-
+**macOS / Linux:**
 ```bash
-bash <(curl -fsSL clawgod.0chen.cc/install.sh) --uninstall
+curl -fsSL https://github.com/0Chencc/clawgod/releases/latest/download/install.sh | bash -s -- --uninstall
+```
+
+**Windows:**
+```powershell
+irm https://github.com/0Chencc/clawgod/releases/latest/download/install.ps1 -OutFile install.ps1; .\install.ps1 -Uninstall
 ```
 
 ## 要件

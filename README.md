@@ -10,12 +10,12 @@ Unlock internal features, remove restrictions, one command, no compilation.
 
 **macOS / Linux:**
 ```bash
-curl -fsSL clawgod.0chen.cc/install.sh | bash
+curl -fsSL https://github.com/0Chencc/clawgod/releases/latest/download/install.sh | bash
 ```
 
 **Windows (PowerShell):**
 ```powershell
-irm clawgod.0chen.cc/install.ps1 | iex
+irm https://github.com/0Chencc/clawgod/releases/latest/download/install.ps1 | iex
 ```
 
 Green logo = patched. Orange logo = original.
@@ -62,16 +62,26 @@ claude.orig         # Original unpatched version
 
 Re-run the installer to get the latest version with patches re-applied:
 
+**macOS / Linux:**
 ```bash
-curl -fsSL clawgod.0chen.cc/install.sh | bash
+curl -fsSL https://github.com/0Chencc/clawgod/releases/latest/download/install.sh | bash
+```
+
+**Windows:**
+```powershell
+irm https://github.com/0Chencc/clawgod/releases/latest/download/install.ps1 | iex
 ```
 
 ## Uninstall
 
-Restores original `claude` command:
-
+**macOS / Linux:**
 ```bash
-bash <(curl -fsSL clawgod.0chen.cc/install.sh) --uninstall
+curl -fsSL https://github.com/0Chencc/clawgod/releases/latest/download/install.sh | bash -s -- --uninstall
+```
+
+**Windows:**
+```powershell
+irm https://github.com/0Chencc/clawgod/releases/latest/download/install.ps1 -OutFile install.ps1; .\install.ps1 -Uninstall
 ```
 
 ## Requirements

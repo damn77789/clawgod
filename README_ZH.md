@@ -10,12 +10,12 @@
 
 **macOS / Linux:**
 ```bash
-curl -fsSL clawgod.0chen.cc/install.sh | bash
+curl -fsSL https://github.com/0Chencc/clawgod/releases/latest/download/install.sh | bash
 ```
 
 **Windows (PowerShell):**
 ```powershell
-irm clawgod.0chen.cc/install.ps1 | iex
+irm https://github.com/0Chencc/clawgod/releases/latest/download/install.ps1 | iex
 ```
 
 绿色 Logo = 已 Patch。橙色 Logo = 原版。
@@ -62,16 +62,26 @@ claude.orig         # 原版未修改版本
 
 重新运行安装命令，自动获取最新版本并重新应用补丁：
 
+**macOS / Linux:**
 ```bash
-curl -fsSL clawgod.0chen.cc/install.sh | bash
+curl -fsSL https://github.com/0Chencc/clawgod/releases/latest/download/install.sh | bash
+```
+
+**Windows:**
+```powershell
+irm https://github.com/0Chencc/clawgod/releases/latest/download/install.ps1 | iex
 ```
 
 ## 卸载
 
-恢复原始 `claude` 命令：
-
+**macOS / Linux:**
 ```bash
-bash <(curl -fsSL clawgod.0chen.cc/install.sh) --uninstall
+curl -fsSL https://github.com/0Chencc/clawgod/releases/latest/download/install.sh | bash -s -- --uninstall
+```
+
+**Windows:**
+```powershell
+irm https://github.com/0Chencc/clawgod/releases/latest/download/install.ps1 -OutFile install.ps1; .\install.ps1 -Uninstall
 ```
 
 ## 要求
