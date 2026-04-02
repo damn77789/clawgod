@@ -4,7 +4,7 @@
 
 > [Claude Code](https://docs.anthropic.com/en/docs/claude-code) ゴッドモード。
 
-内部機能のアンロック、制限の解除、コマンド一つでコンパイル不要。
+**これはサードパーティ製の Claude Code クライアントではありません。** ClawGod は公式 Claude Code の上に適用されるランタイムパッチです。どのバージョンにも対応し、Claude Code が更新されてもパッチは有効であり続けます。
 
 ## インストール
 

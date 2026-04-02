@@ -4,7 +4,7 @@
 
 > God mode for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
 
-Unlock internal features, remove restrictions, one command, no compilation.
+**This is NOT a third-party Claude Code client.** ClawGod is a runtime patch applied on top of the official Claude Code. It works with any version — as Claude Code updates, the patch continues to take effect.
 
 ## Install
 

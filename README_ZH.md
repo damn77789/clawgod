@@ -4,7 +4,7 @@
 
 > [Claude Code](https://docs.anthropic.com/en/docs/claude-code) 上帝模式。
 
-一行命令解锁内部功能、移除限制，无需编译。
+**这不是第三方 Claude Code 客户端。** ClawGod 是作用在官方 Claude Code 之上的运行时补丁。它兼容任何版本——随着 Claude Code 持续更新，补丁始终生效。
 
 ## 安装
 

@@ -98,11 +98,14 @@ $dstCli = Join-Path $ClawDir "cli.original.js"
 Copy-Item -Force $srcCli $dstCli
 Write-OK "Bundle extracted (cli.original.js)"
 
-# ─── Write package.json (ESM support) ─────────────────
+# ─── Ensure ESM support ───────────────────────────────
 
-@'
-{"type":"module"}
-'@ | Set-Content (Join-Path $ClawDir "package.json") -Encoding UTF8
+$pkgJson = Join-Path $ClawDir "package.json"
+$pkg = Get-Content $pkgJson -Raw | ConvertFrom-Json
+if (-not $pkg.type) {
+    $pkg | Add-Member -NotePropertyName "type" -NotePropertyValue "module" -Force
+    $pkg | ConvertTo-Json -Depth 10 | Set-Content $pkgJson -Encoding UTF8
+}
 
 # ─── Write wrapper (cli.js) ───────────────────────────
 
@@ -400,10 +403,8 @@ if (-not (Test-Path $featuresFile)) {
 
 # ─── Replace claude command ───────────────────────────
 
-$launcherContent = @"
-@echo off
-node "$ClawDir\cli.js" %*
-"@
+$cliPath = (Join-Path $ClawDir "cli.js") -replace '\\', '\\'
+$launcherContent = "@echo off`r`nnode `"$cliPath`" %*"
 
 # Find and back up original claude
 $claudeCmd = Join-Path $BinDir "claude.cmd"
@@ -442,6 +443,20 @@ foreach ($loc in @(
             }
         }
         break
+    }
+}
+
+# Rename claude.exe so .cmd takes precedence
+# (rename works even if the exe is running; delete does not)
+if (Test-Path $claudeExe) {
+    if (-not (Test-Path $claudeOrigExe)) {
+        Rename-Item $claudeExe $claudeOrigExe -Force
+        Write-OK "Renamed claude.exe → claude.orig.exe"
+    } else {
+        # Backup already exists, rename to .old for cleanup
+        $oldExe = Join-Path $BinDir "claude.old.exe"
+        Rename-Item $claudeExe $oldExe -Force -ErrorAction SilentlyContinue
+        Write-OK "Moved claude.exe aside (.cmd now takes priority)"
     }
 }
 
