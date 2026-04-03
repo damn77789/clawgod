@@ -43,13 +43,17 @@ echo ""
 # ─── Uninstall ─────────────────────────────────────────
 
 if [ "$UNINSTALL" = "1" ]; then
-  # Restore original claude — check both actual path and default path
   CLAUDE_BIN=$(which claude 2>/dev/null)
   for DIR in "${CLAUDE_BIN:+$(dirname "$CLAUDE_BIN")}" "$BIN_DIR"; do
     [ -z "$DIR" ] && continue
     if [ -e "$DIR/claude.orig" ]; then
+      # Has backup — restore it
       mv "$DIR/claude.orig" "$DIR/claude"
       info "Original claude restored ($DIR/claude)"
+    elif [ -f "$DIR/claude" ] && head -1 "$DIR/claude" 2>/dev/null | grep -q "clawgod"; then
+      # Our launcher, no backup — remove it (otherwise it points to deleted cli.js)
+      rm -f "$DIR/claude"
+      info "Removed ClawGod launcher ($DIR/claude)"
     fi
   done
   rm -rf "$CLAWGOD_DIR/node_modules" "$CLAWGOD_DIR/cli.original.js" "$CLAWGOD_DIR/cli.original.js.bak" "$CLAWGOD_DIR/cli.js" "$CLAWGOD_DIR/patch.js"
@@ -501,8 +505,16 @@ fi
 # ─── Check PATH ───────────────────────────────────────
 
 if ! echo "$PATH" | grep -q "$CLAUDE_DIR" && ! echo "$PATH" | grep -q "$BIN_DIR"; then
+  # Detect shell config file
+  case "$(basename "$SHELL")" in
+    zsh)  SHELL_RC="$HOME/.zshrc" ;;
+    bash) SHELL_RC="$HOME/.bashrc" ;;
+    fish) SHELL_RC="$HOME/.config/fish/config.fish" ;;
+    *)    SHELL_RC="$HOME/.profile" ;;
+  esac
   echo ""
-  warn "Neither $CLAUDE_DIR nor $BIN_DIR is in PATH"
+  warn "$BIN_DIR is not in PATH. Run:"
+  dim "  echo 'export PATH=\"\$HOME/.local/bin:\$PATH\"' >> $SHELL_RC && source $SHELL_RC"
 fi
 
 # ─── Flush shell cache ────────────────────────────────
