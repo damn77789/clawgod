@@ -56,7 +56,7 @@ if [ "$UNINSTALL" = "1" ]; then
       info "Removed ClawGod launcher ($DIR/claude)"
     fi
   done
-  rm -rf "$CLAWGOD_DIR/node_modules" "$CLAWGOD_DIR/cli.original.js" "$CLAWGOD_DIR/cli.original.js.bak" "$CLAWGOD_DIR/cli.js" "$CLAWGOD_DIR/patch.js"
+  rm -rf "$CLAWGOD_DIR/node_modules" "$CLAWGOD_DIR/vendor" "$CLAWGOD_DIR/cli.original.js" "$CLAWGOD_DIR/cli.original.js.bak" "$CLAWGOD_DIR/cli.js" "$CLAWGOD_DIR/patch.js"
   hash -r 2>/dev/null
   info "ClawGod uninstalled"
   echo ""
@@ -104,6 +104,11 @@ if (!p.type) { p.type = 'module'; require('fs').writeFileSync(f, JSON.stringify(
 
 cp "$CLAWGOD_DIR/node_modules/@anthropic-ai/claude-code/cli.js" "$CLAWGOD_DIR/cli.original.js"
 info "Bundle extracted (cli.original.js)"
+
+# ─── Symlink vendor (ripgrep etc.) ─────────────────────
+
+ln -sfn "$CLAWGOD_DIR/node_modules/@anthropic-ai/claude-code/vendor" "$CLAWGOD_DIR/vendor"
+info "Vendor symlinked (ripgrep, tree-sitter)"
 
 # ─── Write wrapper (cli.js) ────────────────────────────
 
