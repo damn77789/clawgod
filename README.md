@@ -58,6 +58,23 @@ claude              # Patched Claude Code
 claude.orig         # Original unpatched version
 ```
 
+## Configuration
+
+`~/.clawgod/provider.json` is auto-created on first run. Setting `apiKey` lets you skip OAuth entirely and point ClawGod at any Anthropic-compatible endpoint.
+
+```json
+{
+  "apiKey": "sk-ant-...",
+  "baseURL": "https://api.anthropic.com",
+  "model": "",
+  "smallModel": "",
+  "timeoutMs": 3000000
+}
+```
+
+- **`apiKey` set** → ClawGod injects it as `ANTHROPIC_API_KEY` and isolates from `~/.claude/settings.json`. Works with Anthropic, DeepSeek, and OpenAI-compatible gateways. A non-Anthropic `baseURL` also populates `ANTHROPIC_AUTH_TOKEN` for gateway auth.
+- **`apiKey` empty** → OAuth path. Run `claude auth login` once; `~/.claude` keeps hosting your subagents, skills, and MCP settings.
+
 ## Update
 
 Re-run the installer to get the latest version with patches re-applied:
@@ -90,7 +107,7 @@ irm https://github.com/0Chencc/clawgod/releases/latest/download/install.ps1 -Out
 ## Requirements
 
 - Node.js >= 18 + npm
-- Claude Code account (`claude auth login`)
+- Claude Code login (`claude auth login`) **or** an API key in `~/.clawgod/provider.json` (see [Configuration](#configuration))
 
 ## License
 

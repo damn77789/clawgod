@@ -58,6 +58,23 @@ claude              # パッチ適用済みClaude Code
 claude.orig         # オリジナル未修正版
 ```
 
+## 設定
+
+初回起動時に `~/.clawgod/provider.json` が自動生成されます。`apiKey` を設定すれば **OAuth ログイン不要**で、Anthropic 互換エンドポイントに接続できます。
+
+```json
+{
+  "apiKey": "sk-ant-...",
+  "baseURL": "https://api.anthropic.com",
+  "model": "",
+  "smallModel": "",
+  "timeoutMs": 3000000
+}
+```
+
+- **`apiKey` を設定**：ClawGod が `ANTHROPIC_API_KEY` として注入し、`~/.claude/settings.json` から隔離します。Anthropic / DeepSeek など OpenAI 互換ゲートウェイでも動作。`baseURL` が Anthropic 以外を指す場合、ゲートウェイ認証用に `ANTHROPIC_AUTH_TOKEN` も自動設定されます。
+- **`apiKey` 未設定**：OAuth パス。一度 `claude auth login` を実行すれば、`~/.claude` 配下の subagents / skills / MCP はそのまま使えます。
+
 ## アップデート
 
 インストールコマンドを再実行すると最新版を取得しパッチを再適用：
@@ -90,7 +107,7 @@ irm https://github.com/0Chencc/clawgod/releases/latest/download/install.ps1 -Out
 ## 要件
 
 - Node.js >= 18 + npm
-- Claude Codeアカウント（`claude auth login`）
+- Claude Code ログイン（`claude auth login`）**または** `~/.clawgod/provider.json` に API キーを設定（[設定](#設定)を参照）
 
 ## ライセンス
 

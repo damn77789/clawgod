@@ -58,6 +58,23 @@ claude              # 已 Patch 的 Claude Code
 claude.orig         # 原版未修改版本
 ```
 
+## 配置
+
+首次启动会自动生成 `~/.clawgod/provider.json`。填入 `apiKey` 即可**跳过 OAuth 登录**，对接任何 Anthropic 协议端点。
+
+```json
+{
+  "apiKey": "sk-ant-...",
+  "baseURL": "https://api.anthropic.com",
+  "model": "",
+  "smallModel": "",
+  "timeoutMs": 3000000
+}
+```
+
+- **填写 `apiKey`**：ClawGod 注入 `ANTHROPIC_API_KEY` 并与 `~/.claude/settings.json` 隔离。可用于 Anthropic 官方、DeepSeek，以及任何 OpenAI-compatible 网关；`baseURL` 指向非 Anthropic 域名时，还会自动注入 `ANTHROPIC_AUTH_TOKEN` 以适配网关鉴权。
+- **留空 `apiKey`**：走 OAuth 路径，执行一次 `claude auth login`，`~/.claude` 下的 subagents / skills / MCP 配置继续有效。
+
 ## 更新
 
 重新运行安装命令，自动获取最新版本并重新应用补丁：
@@ -90,7 +107,7 @@ irm https://github.com/0Chencc/clawgod/releases/latest/download/install.ps1 -Out
 ## 要求
 
 - Node.js >= 18 + npm
-- Claude Code 账号（`claude auth login`）
+- Claude Code 登录（`claude auth login`）**或**在 `~/.clawgod/provider.json` 中填入 API Key（见[配置](#配置)）
 
 ## 许可证
 
