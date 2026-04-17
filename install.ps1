@@ -13,7 +13,7 @@
     .\install.ps1 -Uninstall
 #>
 param(
-    [string]$Version = "latest",
+    [string]$Version = "2.1.92",
     [switch]$Uninstall,
     [switch]$DryRun
 )
