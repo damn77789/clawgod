@@ -1220,6 +1220,34 @@ const patches = [
     replacer: (m, fn, ret) => `return ${ret}`,
     optional: true,
   },
+  {
+    // Shell-integration generator (iT6 in v2.1.140, was Wa1 in older versions)
+    // emits a zsh/bash function that calls the native claude binary with
+    // ARGV0=ugrep|rg|... for multitool dispatch. After clawgod installs, the
+    // baked path points at our shell-script launcher (or .cmd on Windows) —
+    // but shell scripts CANNOT preserve argv[0] (kernel shebang re-exec
+    // overwrites it, and zsh additionally refuses to export ARGV0 as env).
+    // The shell function then fails because bun receives e.g. -G and errors
+    // with "Invalid Argument".
+    //
+    // Fix: redirect the baked path to claude.orig[.exe] (the native binary
+    // backup clawgod creates at install time). Then the multitool dispatch
+    // reaches a real binary that honors argv[0]. See issue #82.
+    //
+    // Generator shape across versions:
+    //   v2.1.88 (Wa1):  let Y=E4([_]),...  ← _ is the claude binary path, no in-function compute
+    //   v2.1.140 (iT6): let ...,z=FJ$.join(Le(),A?"claude.exe":"claude"),Y=A?rL(z):z,...
+    //                   ← path computed inside via join(versionsDir, "claude[.exe]")
+    // Anchor on the join(...) ternary form unique to the generator — the
+    // bare "claude.exe":"claude" string also appears in u18() (basename
+    // helper) but never inside a path.join(), so this regex hits exactly the
+    // shell-integration generator and nothing else.
+    name: 'Shell integration → claude.orig (multitool dispatch fix)',
+    pattern: /([\w$]+\.join\([\w$]+\(\),[\w$]+\?)"claude\.exe":"claude"(\))/g,
+    replacer: (m, prefix, suffix) => `${prefix}"claude.orig.exe":"claude.orig"${suffix}`,
+    sentinel: '?"claude.exe":"claude")',
+    optional: true,
+  },
 ];
 
 const args = process.argv.slice(2);
