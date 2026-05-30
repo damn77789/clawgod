@@ -997,6 +997,7 @@ if (config.timeoutMs) {
 }
 process.env.CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC ??= '1';
 process.env.DISABLE_INSTALLATION_CHECKS ??= '1';
+process.env.CLAUDE_CODE_ENABLE_AUTO_MODE ??= '1';
 process.env.USE_BUILTIN_RIPGREP ??= '1';
 
 const featuresFile = join(providerDir, 'features.json');
@@ -1127,14 +1128,16 @@ const patches = [
     replacer: (m, fn) => `function ${fn}(){return!0}`,
   },
   {
-    // ≤v2.1.110: let Y=Dq();if(Y!=="firstParty"&&Y!=="anthropicAws")return!1;return/^claude-(opus|sonnet)-4-6/.test(K)
-    // v2.1.119+: same gate plus extra branches for claude-opus-4-7.
-    // v2.1.139+: gate moved inside function wuH(H){let $=R7(H),q=Wq();if(q!=="firstParty"&&q!=="anthropicAws")return!1;if($.includes("claude-3-")||...)return!0;return!1}
-    //            i.e. the `let` lifted to a comma-list before the if; the if-gate
-    //            itself is unchanged shape. We drop only the if-gate; downstream
-    //            model allow-list still runs and now accepts third-party calls.
+    // ≤v2.1.110: if(Y!=="firstParty"&&Y!=="anthropicAws")return!1;
+    // v2.1.119–v2.1.149: same shape, extra model branches downstream.
+    // v2.1.158+: provider gate refactored into cH8() helper (bypassed via
+    //   CLAUDE_CODE_ENABLE_AUTO_MODE env set in wrapper); remaining in-line
+    //   gate gained a model-condition suffix:
+    //   if(q!=="firstParty"&&q!=="anthropicAws"&&($==="claude-opus-4-6"||…))return!1;
+    //   [^;]* absorbs the optional &&(…) tail safely (no semicolons inside
+    //   the if-condition).
     name: 'Auto-mode unlock for third-party API',
-    pattern: /if\(([\w$]+)!=="firstParty"&&\1!=="anthropicAws"\)return!1;/g,
+    pattern: /if\(([\w$]+)!=="firstParty"&&\1!=="anthropicAws"[^;]*\)return!1;/g,
     replacer: () => '',
     sentinel: '!=="firstParty"&&',
   },
