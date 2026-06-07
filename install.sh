@@ -899,6 +899,20 @@ if (!process.env.CLAUDE_INTERNAL_FC_OVERRIDES && existsSync(featuresFile)) {
   } catch {}
 }
 
+// Monkey-patch process.execPath: Anthropic's CLI uses process.execPath to
+// locate the native binary for shell wrappers (find→bfs, grep→ugrep, rg) and
+// subprocess spawning. Under Bun, process.execPath returns the Bun runtime
+// path, not the Claude native binary. The launcher script sets
+// CLAUDE_CODE_EXECPATH to claude.orig (the real ELF binary) before exec'ing
+// Bun, so we use that as the source of truth.  See issue #100.
+const _realExecPath = process.env.CLAUDE_CODE_EXECPATH || process.execPath;
+if (_realExecPath !== process.execPath) {
+  Object.defineProperty(process, 'execPath', {
+    value: _realExecPath,
+    configurable: true,
+  });
+}
+
 require('./cli.original.cjs');
 WRAPPER_EOF
 chmod +x "$CLAWGOD_DIR/cli.cjs"
